@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  db: 
+    image: mysql
+    restart: always
+    ports: 
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: notrelevant
+      MYSQL_USER: basically
+      MYSQL_PASSWORD: insecure
+
+  app-server:
+    restart: always
+    build: ./server
+    ports:
+      - "5000:5000"
+
+  app-user-interface:
+    restart: always
+    build: ./ui
+    ports:
+      - "3000:3000"
+    tty: true
