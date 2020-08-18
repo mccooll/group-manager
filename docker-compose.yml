@@ -7,9 +7,11 @@ services:
     ports: 
       - '3306:3306'
     environment:
-      MYSQL_ROOT_PASSWORD: notrelevant
-      MYSQL_USER: basically
-      MYSQL_PASSWORD: insecure
+      MYSQL_ROOT_PASSWORD: insecure
+      MYSQL_DATABASE: Organization
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
 
   app-server:
     restart: always
