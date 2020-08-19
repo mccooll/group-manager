@@ -1,7 +1,6 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flaskext.mysql import MySQL
 import os
-from pprint import pprint
 app = Flask(__name__)
 app.config.update(
 	MYSQL_DATABASE_HOST=os.getenv('MYSQL_DATABASE_HOST'),
@@ -14,12 +13,12 @@ mysql.init_app(app)
 
 @app.route('/size')
 def size():
-    return getQuery('''
+	return getQuery('''
 		SELECT `when`, CAST(
 			SUM(IF(isJoin,1,-1)) OVER ( ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)
 		AS SIGNED) AS size
-		FROM Membership WHERE groupId=1 ORDER BY `when` DESC, `isJoin` ASC LIMIT 10;
-''')
+		FROM Membership WHERE groupId=%s ORDER BY `when` DESC, `isJoin` ASC LIMIT 10;
+	''', request.args.get('id'))
 
 @app.route('/members')
 def members():
@@ -32,14 +31,15 @@ def groups():
 @app.route('/group-members')
 def groupMembers():
 	return getQuery('''
-		SELECT groupId, memberId
-		FROM Membership Group BY groupId, memberId
+		SELECT memberId
+		FROM Membership WHERE groupId=%s
+		GROUP BY groupId, memberId
 		HAVING SUM(IF(isJoin,1,-1)) > 0
-	''')
+	''', request.args.get('id'))
 
-def getQuery(query):
+def getQuery(query, params=None):
 	cursor = mysql.get_db().cursor()
-	res = cursor.execute(query)
+	res = cursor.execute(query, params)
 	res2 = cursor.fetchall()
 	res3 = dictFormat(res2,cursor.description)
 	return jsonify(res3)
