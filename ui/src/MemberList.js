@@ -7,7 +7,7 @@ function MemberPage(props) {
 
   const getAllMembers = async () => {
     const response = await fetcher("members");
-    const members = setMembership(response,[]);
+    setMembership(response,[]);
   }
 
   const setMembership = (members, membersInGroup) => {
@@ -17,7 +17,7 @@ function MemberPage(props) {
   		return(acc)
   	}, []);
   	membersInGroup.forEach((m) => {
-  		members[members.findIndex(e => e.id == m.memberId)].isMember = true;
+  		members[members.findIndex(e => e.id === m.memberId)].isMember = true;
   	});
   	setAllMembers(members);
   }
