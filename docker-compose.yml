@@ -18,6 +18,15 @@ services:
     build: ./server
     ports:
       - "5000:5000"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - FLASK_ENV=development
+      - MYSQL_DATABASE_HOST=db
+      - MYSQL_DATABASE_USER=root
+      - MYSQL_DATABASE_PASSWORD=insecure
+      - MYSQL_DATABASE_DB=Organization
+    volumes:
+      - ./server:/app
 
   app-user-interface:
     restart: always
