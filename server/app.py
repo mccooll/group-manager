@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, request
 from flaskext.mysql import MySQL
 import os
+from flask_cors import CORS
 app = Flask(__name__)
+CORS(app)
 app.config.update(
 	MYSQL_DATABASE_HOST=os.getenv('MYSQL_DATABASE_HOST'),
 	MYSQL_DATABASE_USER=os.getenv('MYSQL_DATABASE_USER'),

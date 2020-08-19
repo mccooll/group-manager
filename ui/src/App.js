@@ -1,24 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState, useEffect} from 'react';
+import MemberChart from './MemberChart'
+import MemberList from './MemberList'
+import fetcher from './fetcher'
 import './App.css';
 
 function App() {
+
+  const [groups, setGroups] = useState([]);
+  const [groupId, setGroupId] = useState(null);
+
+  const getGroups = async () => {
+    const response = await fetcher("groups");
+    setGroups(response);
+  }
+
+  useEffect(() =>  {
+    getGroups();
+  },[])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <select onChange={(v)=>setGroupId(v.target.value)}>
+          <option value="">Select a group</option>
+          {groups.map((g) => (
+            <option key={g.id} value={g.id}>{g.name}</option>
+          ))}
+      </select>
+      <MemberList groupId={groupId} />
+      <MemberChart groupId={groupId} /> 
     </div>
   );
 }
